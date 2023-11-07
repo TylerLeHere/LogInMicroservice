@@ -1,12 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics 
-from .serializers import RoomSerializer
-from .models import Room
-
-
+from .serializers import UserSerializer
+from .models import User, HealthHistory
 
 # Create your views here.
-class RoomView(generics.ListCreateAPIView):
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+class UserView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
