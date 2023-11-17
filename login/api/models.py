@@ -1,25 +1,50 @@
 from django.db import models
-import string
-import random
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser, UserManager
+from django.contrib.auth.models import PermissionsMixin
 
-def generate_unique_code():
-    length = 6
+class CustomUserManager(UserManager):
+    def _create_user(self, phn, name, password, **extra_fields):        
+        user = self.model(phn=phn, name=name, **extra_fields)
+        user.set_password(password)
+        user.save()
 
-    while True:
-        code = ''.join(random.choices(string.ascii_uppercase, k = length)) #Generate a random code that is k length
-        if Room.objects.filter(code = code).count() == 0:
-            break
+        return user
     
-    return code
+    def create_user(self, phn=None, name=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(phn, name, password, **extra_fields)
+    
+    def create_superuser(self, phn=None, name=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self._create_user(phn, name, password, **extra_fields)
+    
+class User(AbstractBaseUser, PermissionsMixin):
+    phn = models.IntegerField(primary_key=True, unique=True, blank=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    password = models.CharField(max_length=255, blank=True)
+    username = None
 
+    is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
+    objects = CustomUserManager()
 
-# Create your models here.
-#  Standard data base have columns, tables write python and interpret all of the data code for us
-class Room(models.Model):
-    username = models.CharField(max_length=8, default = "", unique = True)
-    password = models.CharField(max_length=50, unique=True)
-    remember_me = models.BooleanField(null = False, default = False)
-    votes_to_skip = models.IntegerField(null = False, default = 1)
-    created_at = models.DateTimeField(auto_now_add=True) 
+    USERNAME_FIELD = 'phn'
+    REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
+    def __str__(self):
+        return f'{self.name} {self.phn}'
+    
+    
+# class HealthHistory(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     description = models.TextField(null=True)
+#     created_at = models.DateTimeField(auto_now_add=True) 
 

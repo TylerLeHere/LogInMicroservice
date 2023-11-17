@@ -1,8 +1,31 @@
-#Take models and has all of the python related code, translate all of these keys into Json
 from rest_framework import serializers
-from .models import Room
+from .models import User
 
-class RoomSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Room
-        fields = ('id', 'username', 'password', 'remember_me', 'votes_to_skip', 'created_at')
+        model = User
+        fields = ['phn', 'name', 'password']
+        extra_kwargs = {
+            'password' : {'write_only' : True} # dont show password when returning user
+        }
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        # validated data without password
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+
+
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ('__all__')
+
+# class HistorySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = HealthHistory
+#         fields = ('__all__')
