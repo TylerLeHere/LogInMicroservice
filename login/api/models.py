@@ -2,20 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, AbstractUser, UserManager
 from django.contrib.auth.models import PermissionsMixin
 
-# class User(models.Model):
-#     username = models.CharField(max_length=100)
-#     phn = models.IntegerField(null=False)
-#     password = models.CharField(max_length=100)
-
-# class User(AbstractUser, PermissionsMixin):
-#     phn = models.IntegerField(primary_key=True, unique=True)
-#     name = models.CharField(max_length=255)
-#     password = models.CharField(max_length=255)
-#     username = None
-
-#     USERNAME_FIELD = 'phn'
-#     REQUIRED_FIELDS = []
-
 class CustomUserManager(UserManager):
     def _create_user(self, phn, name, password, **extra_fields):        
         user = self.model(phn=phn, name=name, **extra_fields)
@@ -55,6 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f'{self.name} {self.phn}'
+    
+    
 # class HealthHistory(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     description = models.TextField(null=True)
