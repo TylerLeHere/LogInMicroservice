@@ -43,8 +43,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f'{self.name} {self.phn}'
     
     
-# class HealthHistory(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     description = models.TextField(null=True)
-#     created_at = models.DateTimeField(auto_now_add=True) 
+class HealthHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.TextField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True) 
 

@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer
+from .serializers import UserSerializer, HistorySerializer
 from rest_framework.exceptions import AuthenticationFailed
-from .models import User
+from .models import User, HealthHistory
 import jwt
 import datetime
 
@@ -78,30 +78,28 @@ class LogoutView(APIView):
 
         return response
 
+class UserView(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
 
-# Create your views here.
-# class UserView(generics.ListCreateAPIView):
-#     serializer_class = UserSerializer
+    def get_queryset(self):
+        return User.objects.all()
 
-#     def get_queryset(self):
-#         return User.objects.all()
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
 
-# class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-#     serializer_class = UserSerializer
-
-#     def get_queryset(self):
-#         return User.objects.all()
+    def get_queryset(self):
+        return User.objects.all()
     
-# class HistoryView(generics.ListCreateAPIView):
-#     serializer_class = HistorySerializer
+class HistoryView(generics.ListCreateAPIView):
+    serializer_class = HistorySerializer
 
-#     def get_queryset(self):
-#         return HealthHistory.objects.all()
+    def get_queryset(self):
+        return HealthHistory.objects.all()
     
-# class UserHistory(generics.ListAPIView):
-#     serializer_class = HistorySerializer
+class UserHistory(generics.ListAPIView):
+    serializer_class = HistorySerializer
 
-#     def get_queryset(self):
-#         return HealthHistory.objects.filter(user=self.kwargs['pk'])
+    def get_queryset(self):
+        return HealthHistory.objects.filter(user=self.kwargs['pk'])
 
 
