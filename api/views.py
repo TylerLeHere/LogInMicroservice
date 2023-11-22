@@ -93,13 +93,22 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class HistoryView(generics.ListCreateAPIView):
     serializer_class = HistorySerializer
 
+    def get(self, request,  *args, **kwargs):
+        phn = self.request.GET.get('phn', None)
+        if phn is not None:
+            history = HealthHistory.objects.filter(user=phn)
+            serializer = HistorySerializer(history, many=True)
+            return Response(serializer.data)
+        else:
+            return self.list(request, *args, **kwargs)
+
     def get_queryset(self):
         return HealthHistory.objects.all()
     
-class UserHistory(generics.ListAPIView):
+class HistoryDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HistorySerializer
 
     def get_queryset(self):
-        return HealthHistory.objects.filter(user=self.kwargs['pk'])
+        return HealthHistory.objects.all()
 
 

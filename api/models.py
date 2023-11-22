@@ -45,6 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
 class HealthHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    doctor = models.IntegerField(null=False) # doctor's phn. should probably be foreign key but this works
     description = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True) 
 
